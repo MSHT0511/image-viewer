@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import App from '@renderer/App';
 
 describe('App', () => {
@@ -192,5 +192,263 @@ describe('App', () => {
 
     // Should still show empty state
     expect(screen.getByText(/画像を開くには/)).toBeInTheDocument();
+  });
+
+  describe('handleDrop', () => {
+    it('should handle directory drop with images', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: true, isFile: false });
+      const mockGetImagesInFolder = vi.fn().mockResolvedValue([
+        'C:\\test\\folder\\image1.jpg',
+        'C:\\test\\folder\\image2.jpg',
+        'C:\\test\\folder\\image3.jpg'
+      ]);
+      const mockGetPathForFile = vi.fn().mockReturnValue('C:\\test\\folder');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      // Create mock file for directory
+      const mockFile = new File([], 'folder', { type: '' });
+      Object.defineProperty(mockFile, 'path', { value: 'C:\\test\\folder' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetFileStats).toHaveBeenCalledWith('C:\\test\\folder');
+      expect(mockGetImagesInFolder).toHaveBeenCalledWith('C:\\test\\folder');
+    });
+
+    it('should handle directory drop with no images', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: true, isFile: false });
+      const mockGetImagesInFolder = vi.fn().mockResolvedValue([]);
+      const mockGetPathForFile = vi.fn().mockReturnValue('C:\\test\\empty');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      const mockFile = new File([], 'empty', { type: '' });
+      Object.defineProperty(mockFile, 'path', { value: 'C:\\test\\empty' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetImagesInFolder).toHaveBeenCalledWith('C:\\test\\empty');
+    });
+
+    it('should handle file drop with backslash separator (Windows path)', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: false, isFile: true });
+      const mockGetImagesInFolder = vi.fn().mockResolvedValue([
+        'C:\\test\\folder\\image1.jpg',
+        'C:\\test\\folder\\image2.jpg',
+        'C:\\test\\folder\\image3.jpg'
+      ]);
+      const mockGetPathForFile = vi.fn().mockReturnValue('C:\\test\\folder\\image2.jpg');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      const mockFile = new File([], 'image2.jpg', { type: 'image/jpeg' });
+      Object.defineProperty(mockFile, 'path', { value: 'C:\\test\\folder\\image2.jpg' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetFileStats).toHaveBeenCalledWith('C:\\test\\folder\\image2.jpg');
+      expect(mockGetImagesInFolder).toHaveBeenCalledWith('C:\\test\\folder');
+    });
+
+    it('should handle file drop with forward slash separator (Unix path)', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: false, isFile: true });
+      const mockGetImagesInFolder = vi.fn().mockResolvedValue([
+        '/home/user/images/photo1.jpg',
+        '/home/user/images/photo2.jpg'
+      ]);
+      const mockGetPathForFile = vi.fn().mockReturnValue('/home/user/images/photo1.jpg');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      const mockFile = new File([], 'photo1.jpg', { type: 'image/jpeg' });
+      Object.defineProperty(mockFile, 'path', { value: '/home/user/images/photo1.jpg' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetFileStats).toHaveBeenCalledWith('/home/user/images/photo1.jpg');
+      expect(mockGetImagesInFolder).toHaveBeenCalledWith('/home/user/images');
+    });
+
+    it('should handle file drop with no separator (invalid path)', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: false, isFile: true });
+      const mockGetImagesInFolder = vi.fn();
+      const mockGetPathForFile = vi.fn().mockReturnValue('image.jpg');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      const mockFile = new File([], 'image.jpg', { type: 'image/jpeg' });
+      Object.defineProperty(mockFile, 'path', { value: 'image.jpg' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetFileStats).toHaveBeenCalledWith('image.jpg');
+      // Should not call getImagesInFolder for invalid path
+      expect(mockGetImagesInFolder).not.toHaveBeenCalled();
+    });
+
+    it('should handle file drop with empty folder result', async () => {
+      const mockGetFileStats = vi.fn().mockResolvedValue({ isDirectory: false, isFile: true });
+      const mockGetImagesInFolder = vi.fn().mockResolvedValue([]);
+      const mockGetPathForFile = vi.fn().mockReturnValue('C:\\test\\folder\\image.jpg');
+      
+      window.electronAPI.getFileStats = mockGetFileStats;
+      window.electronAPI.getImagesInFolder = mockGetImagesInFolder;
+      window.electronAPI.getPathForFile = mockGetPathForFile;
+
+      const { container } = render(<App />);
+      const dropZone = container.querySelector('.file-drop-zone') as HTMLElement;
+
+      const mockFile = new File([], 'image.jpg', { type: 'image/jpeg' });
+      Object.defineProperty(mockFile, 'path', { value: 'C:\\test\\folder\\image.jpg' });
+
+      const dropEvent = new Event('drop', { bubbles: true });
+      Object.defineProperty(dropEvent, 'dataTransfer', {
+        value: {
+          files: [mockFile],
+          items: [{}]
+        }
+      });
+
+      fireEvent(dropZone, dropEvent);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(mockGetImagesInFolder).toHaveBeenCalledWith('C:\\test\\folder');
+    });
+  });
+
+  describe('handleDoubleClick', () => {
+    it('should reset zoom on double click when image is loaded', async () => {
+      const mockOpenFile = vi.fn().mockResolvedValue({
+        filePath: 'C:\\test\\image.jpg',
+        images: ['C:\\test\\image.jpg']
+      });
+      const mockReadImageFile = vi.fn().mockResolvedValue('data:image/jpeg;base64,test');
+      
+      window.electronAPI.openFile = mockOpenFile;
+      window.electronAPI.readImageFile = mockReadImageFile;
+
+      const { container } = render(<App />);
+
+      // Open a file first
+      const openFileButton = screen.getByText(/ファイルを開く/);
+      openFileButton.click();
+
+      await waitFor(() => {
+        expect(mockOpenFile).toHaveBeenCalled();
+      });
+
+      // Wait for image to load
+      await waitFor(() => {
+        expect(mockReadImageFile).toHaveBeenCalled();
+      });
+
+      // Zoom in
+      const zoomInButton = screen.getByText('+');
+      zoomInButton.click();
+
+      // Wait for zoom to change
+      await waitFor(() => {
+        const zoomText = screen.getByText(/%/);
+        expect(zoomText.textContent).not.toBe('100%');
+      });
+
+      // Double click to reset zoom
+      const imageViewer = container.querySelector('.image-viewer') as HTMLElement;
+      fireEvent.doubleClick(imageViewer);
+
+      // Verify zoom is reset to 100%
+      await waitFor(() => {
+        expect(screen.getByText('100%')).toBeInTheDocument();
+      });
+    });
+
+    it('should not reset zoom on double click when no image is loaded', () => {
+      const { container } = render(<App />);
+
+      // Try to double click without loading an image
+      const imageViewer = container.querySelector('.image-viewer') as HTMLElement;
+      fireEvent.doubleClick(imageViewer);
+
+      // Zoom should still be 100% (unchanged)
+      expect(screen.getByText('100%')).toBeInTheDocument();
+    });
   });
 });
