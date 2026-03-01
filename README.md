@@ -1,5 +1,8 @@
 # Image Viewer
 
+[![Test](https://github.com/MSHT0511/image-viewer/actions/workflows/test.yml/badge.svg)](https://github.com/MSHT0511/image-viewer/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/MSHT0511/image-viewer/branch/main/graph/badge.svg)](https://codecov.io/gh/MSHT0511/image-viewer)
+
 Windows/macOS対応のシンプルな画像ビューワーアプリケーション
 
 ## 特徴
@@ -106,14 +109,62 @@ npm start
 # ビルド（パッケージ化）
 npm run make
 
-# テスト実行
-npm test
+# ユニットテスト実行
+npm run test:unit
 
-# テストをUIモードで実行
+# カバレッジ付きテスト実行
+npm run test:coverage
+
+# E2Eテスト実行
+npm run test:e2e
+
+# 全テスト実行（ユニット + E2E）
+npm run test:all
+
+# E2EテストをUIモードで実行
 npm run test:ui
 
-# テストをheadedモードで実行
+# E2Eテストをheadedモードで実行
 npm run test:headed
+
+# E2Eテストをデバッグモードで実行
+npm run test:debug
+```
+
+## テスト
+
+このプロジェクトは包括的なテストスイートを備えています：
+
+### ユニットテスト
+- **カバレッジ**: 84%+
+- **テストフレームワーク**: Vitest
+- **テスト対象**:
+  - Reactコンポーネント（Toolbar、ImageViewer、NavigationControlsなど）
+  - カスタムフック（useZoom、useImageList、useKeyboardShortcutsなど）
+  - ユーティリティ関数（TIFFコンバーターなど）
+  - メインプロセスロジック（ファイルI/O、IPCハンドラー）
+
+### E2Eテスト
+- **テストフレームワーク**: Playwright
+- **テストシナリオ**:
+  - 画像読み込み（JPEG、PNG、GIF、WebP、TIFF）
+  - ナビゲーション操作
+  - ズーム＆ドラッグ機能
+  - キーボードショートカット
+  - エラーハンドリング
+
+```bash
+# ユニットテストのみ実行
+npm run test:unit
+
+# カバレッジレポート生成
+npm run test:coverage
+
+# E2Eテストのみ実行
+npm run test:e2e
+
+# 全テスト実行
+npm run test:all
 ```
 
 ### プロジェクト構造
