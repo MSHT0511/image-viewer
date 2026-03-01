@@ -1,0 +1,44 @@
+{
+  "name": "image-viewer",
+  "version": "1.0.0",
+  "description": "A simple image viewer for Windows and macOS",
+  "main": ".vite/build/main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "test": "npm run test:build && playwright test",
+    "test:build": "electron-forge package",
+    "test:ui": "npm run test:build && playwright test --ui",
+    "test:headed": "npm run test:build && playwright test --headed",
+    "test:debug": "npm run test:build && playwright test --debug"
+  },
+  "keywords": [
+    "electron",
+    "image-viewer"
+  ],
+  "author": "MSHT0511",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-dmg": "^7.11.1",
+    "@electron-forge/maker-squirrel": "^7.11.1",
+    "@electron-forge/plugin-vite": "^7.11.1",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "electron": "^40.6.1",
+    "playwright": "^1.58.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tiff": "^7.1.3"
+  }
+}
