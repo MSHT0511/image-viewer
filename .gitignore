@@ -108,6 +108,7 @@ out/
 /tests/test-results/
 /tests/playwright-report/
 /test-results/
+/tests/fixtures/
 
 # macOS specific files
 .DS_Store

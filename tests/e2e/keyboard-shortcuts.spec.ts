@@ -31,10 +31,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -45,7 +46,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -83,10 +84,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -97,7 +99,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -135,10 +137,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -149,7 +152,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -165,8 +168,8 @@ test.describe('Keyboard Shortcuts Tests', () => {
     let zoomText = await zoomDisplay.textContent();
     expect(parseInt(zoomText || '0')).toBeGreaterThan(100);
 
-    // Reset zoom with 0
-    await page.keyboard.press('0');
+    // Reset zoom with Ctrl+0
+    await page.keyboard.press('Control+0');
     await page.waitForTimeout(300);
 
     // Should be back to 100%
@@ -198,10 +201,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load first image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -212,7 +216,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -252,10 +256,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -266,7 +271,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -310,10 +315,11 @@ test.describe('Keyboard Shortcuts Tests', () => {
 
     // Load first image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -324,7 +330,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -350,7 +356,7 @@ test.describe('Keyboard Shortcuts Tests', () => {
     expect(parseInt(zoomText || '0')).toBeGreaterThan(100);
 
     // Reset zoom
-    await page.keyboard.press('0');
+    await page.keyboard.press('Control+0');
     await page.waitForTimeout(200);
     await expect(zoomDisplay).toHaveText('100%');
 

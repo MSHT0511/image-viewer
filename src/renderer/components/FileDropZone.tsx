@@ -74,26 +74,44 @@ export function FileDropZone({ children, onDrop }: FileDropZoneProps) {
         });
 
         // Use webUtils.getPathForFile() for secure path access in Electron
-        let path: string | undefined;
+        let filePath: string | undefined;
         try {
-          path = window.electronAPI.getPathForFile(file);
-          console.log('[FileDropZone] got path via getPathForFile:', path);
+          if (window.electronAPI && window.electronAPI.getPathForFile) {
+            filePath = window.electronAPI.getPathForFile(file);
+            console.log('[FileDropZone] got path via getPathForFile:', filePath);
+            // If getPathForFile returns empty string, use file.path as fallback
+            if (!filePath || filePath === '') {
+              console.log('[FileDropZone] getPathForFile returned empty, using file.path');
+              filePath = file.path;
+            }
+          } else {
+            console.log('[FileDropZone] getPathForFile not available, using file.path');
+            filePath = file.path;
+          }
         } catch (error) {
           console.error('[FileDropZone] getPathForFile failed:', error);
           // Fallback to file.path if getPathForFile doesn't work
-          path = file.path;
+          filePath = file.path;
+          console.log('[FileDropZone] using file.path fallback:', filePath);
         }
 
-        if (path) {
-          console.log('[FileDropZone] calling getFileStats for', path);
+        if (filePath) {
+          console.log('[FileDropZone] calling getFileStats for', filePath);
           // Check if it's a file or directory
-          const stats = await window.electronAPI.getFileStats(path);
+          const stats = await window.electronAPI.getFileStats(filePath);
           console.log('[FileDropZone] stats received', stats);
           if (stats) {
-            onDrop(path, stats.isDirectory);
+            console.log('[FileDropZone] calling onDrop with', filePath, stats.isDirectory);
+            onDrop(filePath, stats.isDirectory);
+          } else {
+            console.error('[FileDropZone] getFileStats returned null for', filePath);
           }
         } else {
-          console.error('[FileDropZone] file path is undefined');
+          console.error('[FileDropZone] file path is undefined, file object:', {
+            name: file.name,
+            hasPath: 'path' in file,
+            pathValue: file.path
+          });
         }
       } else {
         console.log('[FileDropZone] no files in dataTransfer');

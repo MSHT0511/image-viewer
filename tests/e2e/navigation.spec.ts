@@ -40,10 +40,11 @@ test.describe('Navigation Tests', () => {
 
     // Simulate drag and drop first image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -54,7 +55,7 @@ test.describe('Navigation Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     // Wait for image to load
@@ -125,10 +126,11 @@ test.describe('Navigation Tests', () => {
 
     // Simulate drag and drop first image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -139,7 +141,7 @@ test.describe('Navigation Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -180,10 +182,11 @@ test.describe('Navigation Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -194,7 +197,7 @@ test.describe('Navigation Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -223,10 +226,11 @@ test.describe('Navigation Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -237,7 +241,7 @@ test.describe('Navigation Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
