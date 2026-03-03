@@ -32,10 +32,11 @@ test.describe('File Loading Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -46,7 +47,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -85,10 +86,11 @@ test.describe('File Loading Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/png' });
+        const file = new File([''], fileName, { type: 'image/png' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -99,7 +101,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -131,10 +133,11 @@ test.describe('File Loading Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/gif' });
+        const file = new File([''], fileName, { type: 'image/gif' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -145,7 +148,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -176,10 +179,11 @@ test.describe('File Loading Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/webp' });
+        const file = new File([''], fileName, { type: 'image/webp' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -190,7 +194,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -223,10 +227,11 @@ test.describe('File Loading Tests', () => {
 
     // Simulate drag and drop
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -237,7 +242,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -276,10 +281,11 @@ test.describe('File Loading Tests', () => {
 
     // Drop the first image - should automatically load all images from the folder
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -290,7 +296,7 @@ test.describe('File Loading Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     await page.waitForTimeout(1000);

@@ -27,10 +27,11 @@ test.describe('Error Handling Tests', () => {
 
     // Try to drop the text file
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(textFile);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'text/plain' });
+        const file = new File([''], fileName, { type: 'text/plain' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -41,7 +42,7 @@ test.describe('Error Handling Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      textFile
+      { filePath: textFile, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -67,10 +68,11 @@ test.describe('Error Handling Tests', () => {
 
     // Try to drop the corrupted file
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(corruptedFile);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -81,7 +83,7 @@ test.describe('Error Handling Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      corruptedFile
+      { filePath: corruptedFile, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -151,10 +153,11 @@ test.describe('Error Handling Tests', () => {
 
     // Load first image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImages[0]);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -165,7 +168,7 @@ test.describe('Error Handling Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImages[0]
+      { filePath: testImages[0], fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -206,10 +209,11 @@ test.describe('Error Handling Tests', () => {
 
     // Load the file
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(specialFile);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -220,7 +224,7 @@ test.describe('Error Handling Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      specialFile
+      { filePath: specialFile, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -265,10 +269,11 @@ test.describe('Error Handling Tests', () => {
 
     // Load image
     const dropZone = page.locator('.file-drop-zone');
+    const fileName = path.basename(testImage);
     await dropZone.evaluate(
-      (element, filePath) => {
+      (element, { filePath, fileName }) => {
         const dataTransfer = new DataTransfer();
-        const file = new File([''], path.basename(filePath), { type: 'image/jpeg' });
+        const file = new File([''], fileName, { type: 'image/jpeg' });
         Object.defineProperty(file, 'path', { value: filePath });
         dataTransfer.items.add(file);
 
@@ -279,7 +284,7 @@ test.describe('Error Handling Tests', () => {
         });
         element.dispatchEvent(event);
       },
-      testImage
+      { filePath: testImage, fileName }
     );
 
     await page.waitForTimeout(1000);
@@ -298,7 +303,7 @@ test.describe('Error Handling Tests', () => {
     expect(maxZoom).toBeLessThanOrEqual(1000);
 
     // Reset
-    await page.keyboard.press('0');
+    await page.keyboard.press('Control+0');
     await page.waitForTimeout(300);
 
     // Try to zoom out excessively

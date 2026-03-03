@@ -73,6 +73,7 @@ function App() {
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!loadedImageUrl) return;
+      e.preventDefault();
 
       setIsDragging(true);
       setDragStart({
@@ -98,6 +99,7 @@ function App() {
     if (!isDragging) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
       const deltaX = (e.clientX - dragStart.x) / scale;
       const deltaY = (e.clientY - dragStart.y) / scale;
 

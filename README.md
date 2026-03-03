@@ -1,7 +1,9 @@
 # Image Viewer
 
 [![Test](https://github.com/MSHT0511/image-viewer/actions/workflows/test.yml/badge.svg)](https://github.com/MSHT0511/image-viewer/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/MSHT0511/image-viewer/branch/main/graph/badge.svg)](https://codecov.io/gh/MSHT0511/image-viewer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/github/v/release/MSHT0511/image-viewer)](https://github.com/MSHT0511/image-viewer/releases)
+[![Electron](https://img.shields.io/badge/Electron-40.6.1-47848F?logo=electron)](https://www.electronjs.org/)
 
 Windows/macOS対応のシンプルな画像ビューワーアプリケーション
 

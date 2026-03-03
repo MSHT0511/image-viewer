@@ -123,7 +123,7 @@ tests/
 
 - GitHub Actionsでテスト自動実行
 - プルリクエスト / プッシュ時にテスト実行
-- カバレッジレポートをCodecovにアップロード
+- PRコメントにカバレッジレポートを自動投稿（vitest-coverage-report-action）
 - 複数OS（Ubuntu、Windows、macOS）でテスト実行
 
 ## 今後の拡張予定
